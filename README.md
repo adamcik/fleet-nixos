@@ -18,7 +18,7 @@
 3. Import module:
    ```nix
    imports = [
-    inputs.fleet-nix.nixosModules.gitlab
+    inputs.fleet-nix.nixosModules.fleet-nixos
    ];
    ```
 

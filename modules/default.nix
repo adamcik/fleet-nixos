@@ -1,4 +1,5 @@
-{gitlabPackages}: {
-  imports = [./fleet.nix];
-  _module.args.gitlabPackages = gitlabPackages;
+{ fleetPackages }:
+{
+  imports = [ ./fleet.nix ];
+  _module.args.fleetPackages = fleetPackages;
 }

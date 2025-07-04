@@ -21,7 +21,7 @@ let
 
   hash =
     {
-      # get hash with `nix hash file ~/downloads/fleet-osquery_1.41.0_arm64.deb`
+      # get hash with `nix hash file ~/downloads/fleet-osquery_1.27.0_arm64.deb`
       x86_64-linux = "sha256-M+8l6NGnDjSfxraeohUGuD7DejEoO5lKJLs+cHC85ow=";
       aarch64-linux = "sha256-e+xDmkb0nG8AodQPTDhn/ao+L5NMbJApGTCOm3lrfnk=";
     }
@@ -37,9 +37,9 @@ stdenv.mkDerivation rec {
   ];
 
   src = requireFile rec {
-    message = " Adriel is here Could not find ${name} in the store. Please see ${url}.";
+    message = "Could not find ${name} in the store. Please see ${url}.";
     name = "fleet-osquery_${version}_${platform}.deb";
-    url = "https://gitlab.com/proglottis/gitlab-team-nix/-/blob/main/README.md";
+    url = "";
     inherit hash;
   };
 

@@ -1,5 +1,5 @@
 {
-  gitlabPackages,
+  fleetPackages,
   pkgs,
   config,
   lib,
@@ -28,7 +28,7 @@ in
 {
   options.services.fleet = {
     enable = lib.mkEnableOption "fleet";
-    package = lib.mkPackageOption gitlabPackages.${pkgs.stdenv.hostPlatform.system} "fleet" { };
+    package = lib.mkPackageOption fleetPackages.${pkgs.stdenv.hostPlatform.system} "fleet" { };
   };
 
   config = lib.mkIf cfg.enable {
