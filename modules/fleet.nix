@@ -11,13 +11,17 @@ let
   # Create an FHS environment for the orbit executable
   orbit-fhs = pkgs.buildFHSEnv {
     name = "orbit-fhs";
-    # Add dependencies needed by the orbit executable
+
+    # Add dependencies needed by the orbit executable AND its children (like sudo)
     targetPkgs = pkgs: [
       pkgs.stdenv.cc.cc
       pkgs.glibc
       pkgs.zlib
+      # Add PAM and sudo to the environment
+      pkgs.pam
+      pkgs.sudo
     ];
-    # The command to run inside the FHS environment
+
     runScript = "${cfg.package}/bin/orbit";
   };
 in
