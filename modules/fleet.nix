@@ -7,6 +7,23 @@
 }:
 let
   cfg = config.services.fleet;
+
+  # Create an FHS environment for the orbit executable
+  orbit-fhs = pkgs.buildFHSEnv {
+    name = "orbit-fhs";
+
+    # Add dependencies needed by the orbit executable AND its children (like sudo)
+    targetPkgs = pkgs: [
+      pkgs.stdenv.cc.cc
+      pkgs.glibc
+      pkgs.zlib
+      # Add PAM and sudo to the environment
+      pkgs.pam
+      pkgs.sudo
+    ];
+
+    runScript = "${cfg.package}/bin/orbit";
+  };
 in
 {
   options.services.fleet = {
@@ -16,11 +33,7 @@ in
 
   config = lib.mkIf cfg.enable {
     environment = {
-      systemPackages = [
-        cfg.package
-        # Add steam-run to the system so the service can find it
-        pkgs.steam-run
-      ];
+      systemPackages = [ cfg.package ];
       etc."default/orbit".source = "${cfg.package}/etc/default/orbit";
     };
 
@@ -31,9 +44,8 @@ in
       after = [ "network.target" ];
 
       serviceConfig = {
-        # Wrap the original command in steam-run
-        ExecStart = "${pkgs.steam-run}/bin/steam-run ${cfg.package}/bin/orbit";
-
+        # Execute orbit within the FHS environment
+        ExecStart = "${orbit-fhs}/bin/orbit-fhs";
         ExecStartPre = pkgs.writeShellScript "orbit-init" ''
           mkdir -p /opt/orbit
           cp "${cfg.package}/opt/orbit/certs.pem" \
