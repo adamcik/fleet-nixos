@@ -1,24 +1,24 @@
-# gitlab-team-nix
+# fleet-nixos package
 
 ## Usage
 
-1. Download the [fleet package](https://gitlab.com/gitlab-com/gl-security/corp/tooling/fleet-builds/-/releases) to store:
+1. Download the fleet package to store:
    ```shell
    nix-store --add-fixed sha256 "fleet-osquery_<version>_<arch>.deb"
    ```
 
 2. Add flake as input:
    ```nix
-   gitlab-team-nix = {
-       url = "gitlab:proglottis/gitlab-team-nix";
-       inputs.nixpkgs.follows = "nixpkgs";
-   };
+    fleet-nix = {
+      url = "github:AdrielVelazquez/fleet-nixos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
    ```
 
 3. Import module:
    ```nix
    imports = [
-     inputs.gitlab-team-nix.nixosModules.gitlab
+    inputs.fleet-nix.nixosModules.gitlab
    ];
    ```
 
