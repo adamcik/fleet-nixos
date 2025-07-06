@@ -47,7 +47,6 @@ stdenv.mkDerivation rec {
     runHook preInstall
 
     mkdir -p $out
-    mkdir -p /opt/orbit/bin/orbit/
     cp -r ./* $out
 
     makeWrapper "$out/opt/orbit/bin/orbit/${platformDir}/stable/orbit" "$out/bin/orbit"
