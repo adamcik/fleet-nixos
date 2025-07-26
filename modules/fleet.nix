@@ -34,7 +34,7 @@ let
       # --- NEW: Add Wayland specific packages ---
       pkgs.wayland # For native Wayland support
       pkgs.xwayland # For X11 app compatibility on Wayland
-      pkgs.xorg.libxkbcommon # Needed for keyboard input on both X11 and Wayland
+      pkgs.libxkbcommon # Needed for keyboard input on both X11 and Wayland
     ];
 
     # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
