@@ -55,6 +55,7 @@ in
              "${cfg.package}/opt/orbit/tuf-metadata.json" \
              "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" \
              "${cfg.package}/opt/orbit/bin/orbit/linux/stable/orbit" \
+             "${cfg.package}/opt/orbit/identifier" \
              /opt/orbit
           cp "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" /opt/orbit/bin/osqueryd/linux/stable/osqueryd
           chmod 600 /opt/orbit/tuf-metadata.json
