@@ -58,6 +58,7 @@ in
              "${cfg.package}/opt/orbit/identifier" \
              /opt/orbit
           cp "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" /opt/orbit/bin/osqueryd/linux/stable/osqueryd
+          cp "${cfg.package}/opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop" /opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop
           chmod 600 /opt/orbit/tuf-metadata.json
         '';
 
