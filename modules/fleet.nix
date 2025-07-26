@@ -22,7 +22,7 @@ let
       pkgs.sudo
     ];
 
-    runScript = "${cfg.package}/orbit --fleet-desktop=false --disable-updates=true";
+    runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
   };
 in
 {
@@ -52,6 +52,7 @@ in
              "${cfg.package}/opt/orbit/osquery.flags" \
              "${cfg.package}/opt/orbit/tuf-metadata.json" \
              "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" \
+             "${cfg.package}/opt/orbit/bin/orbit/linux/stable/orbit" \
              /opt/orbit
           chmod 600 /opt/orbit/tuf-metadata.json
         '';
