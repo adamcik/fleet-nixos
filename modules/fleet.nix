@@ -17,9 +17,9 @@ let
       pkgs.stdenv.cc.cc
       pkgs.glibc
       pkgs.zlib
-      # Add PAM and sudo to the environment
       pkgs.pam
-      pkgs.sudo
+      pkgs.shadow
+      pkgs.coreutils
     ];
 
     # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
