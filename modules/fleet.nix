@@ -49,12 +49,14 @@ in
         ExecStart = "${orbit-fhs}/bin/orbit-fhs";
         ExecStartPre = pkgs.writeShellScript "orbit-init" ''
           mkdir -p /opt/orbit
+          mkdir -p /opt/orbit/bin/osqueryd/linux/stable
           cp "${cfg.package}/opt/orbit/certs.pem" \
              "${cfg.package}/opt/orbit/osquery.flags" \
              "${cfg.package}/opt/orbit/tuf-metadata.json" \
              "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" \
              "${cfg.package}/opt/orbit/bin/orbit/linux/stable/orbit" \
              /opt/orbit
+          cp "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" /opt/orbit/bin/osqueryd/linux/stable/osqueryd
           chmod 600 /opt/orbit/tuf-metadata.json
         '';
 
