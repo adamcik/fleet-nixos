@@ -50,6 +50,7 @@ in
         ExecStartPre = pkgs.writeShellScript "orbit-init" ''
           mkdir -p /opt/orbit
           mkdir -p /opt/orbit/bin/osqueryd/linux/stable
+          mkdir -p /opt/orbit/bin/desktop/linux/stable/fleet-desktop 
           cp "${cfg.package}/opt/orbit/certs.pem" \
              "${cfg.package}/opt/orbit/osquery.flags" \
              "${cfg.package}/opt/orbit/tuf-metadata.json" \
