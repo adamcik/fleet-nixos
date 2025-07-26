@@ -23,7 +23,7 @@ let
     ];
 
     # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
-    runScript = "/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
+    runScript = "/opt/orbit/orbit --fleet-desktop=true --disable-updates=true";
   };
 in
 {
