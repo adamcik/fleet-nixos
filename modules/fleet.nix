@@ -20,6 +20,21 @@ let
       pkgs.pam
       pkgs.shadow
       pkgs.coreutils
+
+      # GUI dependencies for Fleet Desktop
+      pkgs.xorg.libX11
+      pkgs.xorg.libXScrnSaver
+      pkgs.libglvnd
+      pkgs.gtk3
+      pkgs.at-spi2-atk
+      pkgs.alsa-lib
+      pkgs.cups
+      pkgs.udev
+
+      # --- NEW: Add Wayland specific packages ---
+      pkgs.wayland # For native Wayland support
+      pkgs.xwayland # For X11 app compatibility on Wayland
+      pkgs.xorg.libxkbcommon # Needed for keyboard input on both X11 and Wayland
     ];
 
     # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
@@ -56,7 +71,6 @@ in
              "${cfg.package}/opt/orbit/tuf-metadata.json" \
              "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" \
              "${cfg.package}/opt/orbit/bin/orbit/linux/stable/orbit" \
-             "${cfg.package}/opt/orbit/identifier" \
              /opt/orbit
           cp "${cfg.package}/opt/orbit/bin/osqueryd/linux/stable/osqueryd" /opt/orbit/bin/osqueryd/linux/stable/osqueryd
           cp "${cfg.package}/opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop" /opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop
