@@ -22,7 +22,8 @@ let
       pkgs.sudo
     ];
 
-    runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
+    # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
+    runScript = "/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
   };
 in
 {
