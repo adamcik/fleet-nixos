@@ -96,16 +96,12 @@ in
     systemd.user.services."fleet-desktop" = {
       Unit = {
         Description = "Fleet Desktop GUI";
-        # It will start after your main graphical session is ready.
         After = [
           "graphical-session.target"
           "orbit.service"
         ];
       };
-      Install = {
-        # This makes it part of your graphical session.
-        WantedBy = [ "graphical-session.target" ];
-      };
+      WantedBy = [ "graphical-session.target" ];
       Service = {
         # The command to run is the FHS wrapper defined in the let block.
         ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
