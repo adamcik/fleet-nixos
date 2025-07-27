@@ -102,12 +102,9 @@ in
         ];
       };
       WantedBy = [ "graphical-session.target" ];
-      Service = {
-        # The command to run is the FHS wrapper defined in the let block.
-        ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
-        Restart = "on-failure";
-        RestartSec = 10;
-      };
+      ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
+      Restart = "on-failure";
+      RestartSec = 10;
     };
   };
 }
