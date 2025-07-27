@@ -8,11 +8,9 @@
 let
   cfg = config.services.fleet;
 
-  # Create an FHS environment for the orbit executable
   orbit-fhs = pkgs.buildFHSEnv {
     name = "orbit-fhs";
 
-    # Add dependencies needed by the orbit executable AND its children (like sudo)
     targetPkgs = pkgs: [
       pkgs.stdenv.cc.cc
       pkgs.glibc
@@ -20,31 +18,45 @@ let
       pkgs.pam
       pkgs.shadow
       pkgs.coreutils
-
-      # GUI dependencies for Fleet Desktop
-      pkgs.xorg.libX11
-      pkgs.xorg.libXScrnSaver
-      pkgs.libglvnd
-      pkgs.gtk3
-      pkgs.at-spi2-atk
-      pkgs.alsa-lib
-      pkgs.cups
-      pkgs.udev
-
-      # --- NEW: Add Wayland specific packages ---
-      pkgs.wayland # For native Wayland support
-      pkgs.xwayland # For X11 app compatibility on Wayland
-      pkgs.libxkbcommon # Needed for keyboard input on both X11 and Wayland
     ];
 
     # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
-    runScript = "/opt/orbit/orbit --fleet-desktop=true --disable-updates=true";
+    runScript = "/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
+  };
+  fleet-desktop-fhs = pkgs.buildFHSEnv {
+    name = "fleet-desktop-fhs";
+    targetPkgs =
+      pkgs: with pkgs; [
+        # GUI and Wayland dependencies from before
+        xorg.libX11
+        xorg.libXScrnSaver
+        libglvnd
+        gtk3
+        at-spi2-atk
+        alsa-lib
+        cups
+        udev
+        wayland
+        xwayland
+        libxkbcommon
+      ];
+    runScript = ''
+      export FLEET_DESKTOP_FLEET_URL="https://reddit.cloud.fleetdm.com"
+      export FLEET_DESKTOP_DEVICE_IDENTIFIER_PATH="/opt/orbit/identifier"
+      export FLEET_DESKTOP_TLS_CERTIFICATES_PATH="/opt/orbit/certs.pem"
+      exec /opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop
+    '';
   };
 in
 {
   options.services.fleet = {
     enable = lib.mkEnableOption "fleet";
     package = lib.mkPackageOption fleetPackages.${pkgs.stdenv.hostPlatform.system} "fleet" { };
+    userName = lib.mkOption {
+      type = lib.types.str;
+      description = "The user for whom to autostart Fleet Desktop.";
+      example = "adriel";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -84,6 +96,27 @@ in
         KillMode = "control-group";
         KillSignal = "SIGTERM";
         CPUQuota = "20%";
+      };
+    };
+    users.users.${cfg.userName}.systemd.user.services."fleet-desktop" = {
+      Unit = {
+        Description = "Fleet Desktop GUI";
+        After = [
+          "graphical-session.target"
+          "orbit.service"
+        ];
+      };
+
+      Install = {
+        # This makes it part of your graphical session.
+        WantedBy = [ "graphical-session.target" ];
+      };
+
+      Service = {
+        # The command to run is the FHS wrapper we defined above.
+        ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
+        Restart = "on-failure";
+        RestartSec = 5;
       };
     };
   };
