@@ -94,17 +94,19 @@ in
       };
     };
     systemd.user.services."fleet-desktop" = {
-      Unit = {
-        Description = "Fleet Desktop GUI";
-        After = [
-          "graphical-session.target"
-          "orbit.service"
-        ];
+      description = "Fleet Desktop GUI";
+      after = [
+        "graphical-session.target"
+        "orbit.service"
+      ];
+
+      wantedBy = [ "graphical-session.target" ];
+
+      serviceConfig = {
+        ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
+        Restart = "on-failure";
+        RestartSec = 10;
       };
-      WantedBy = [ "graphical-session.target" ];
-      ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
-      Restart = "on-failure";
-      RestartSec = 10;
     };
   };
 }
