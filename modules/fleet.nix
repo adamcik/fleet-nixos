@@ -52,11 +52,6 @@ in
   options.services.fleet = {
     enable = lib.mkEnableOption "fleet";
     package = lib.mkPackageOption fleetPackages.${pkgs.stdenv.hostPlatform.system} "fleet" { };
-    userName = lib.mkOption {
-      type = lib.types.str;
-      description = "The user for whom to autostart Fleet Desktop.";
-      example = "adriel";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -98,25 +93,24 @@ in
         CPUQuota = "20%";
       };
     };
-    users.users.${cfg.userName}.systemd.user.services."fleet-desktop" = {
+    systemd.user.services."fleet-desktop" = {
       Unit = {
         Description = "Fleet Desktop GUI";
+        # It will start after your main graphical session is ready.
         After = [
           "graphical-session.target"
           "orbit.service"
         ];
       };
-
       Install = {
         # This makes it part of your graphical session.
         WantedBy = [ "graphical-session.target" ];
       };
-
       Service = {
-        # The command to run is the FHS wrapper we defined above.
+        # The command to run is the FHS wrapper defined in the let block.
         ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
         Restart = "on-failure";
-        RestartSec = 5;
+        RestartSec = 10;
       };
     };
   };
