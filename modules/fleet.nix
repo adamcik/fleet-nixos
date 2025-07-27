@@ -41,9 +41,9 @@ let
         libxkbcommon
       ];
     runScript = ''
-      export FLEET_DESKTOP_FLEET_URL="https://reddit.cloud.fleetdm.com"
-      export FLEET_DESKTOP_DEVICE_IDENTIFIER_PATH="/opt/orbit/identifier"
-      export FLEET_DESKTOP_TLS_CERTIFICATES_PATH="/opt/orbit/certs.pem"
+      FLEET_DESKTOP_FLEET_URL="https://reddit.cloud.fleetdm.com" \
+      FLEET_DESKTOP_DEVICE_IDENTIFIER_PATH="/opt/orbit/identifier" \
+      FLEET_DESKTOP_TLS_CERTIFICATES_PATH="/opt/orbit/certs.pem" \
       exec /opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop
     '';
   };
