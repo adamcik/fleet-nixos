@@ -10,7 +10,7 @@
 2. Add flake as input:
    ```nix
     fleet-nix = {
-      url = "github:AdrielVelazquez/fleet-nixos";
+      url = "github:adamcik/fleet-nixos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
    ```
