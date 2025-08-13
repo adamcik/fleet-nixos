@@ -6,10 +6,9 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      ...
+    { self
+    , nixpkgs
+    , ...
     }:
     let
       systems = [
@@ -26,14 +25,5 @@
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
       packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       nixosModules.fleet-nixos = import ./modules { fleetPackages = self.packages; };
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          gdk = pkgs.callPackage ./dev-shells/gdk.nix { };
-        }
-      );
     };
 }
