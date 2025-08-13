@@ -1,9 +1,8 @@
-{
-  fleetPackages,
-  pkgs,
-  config,
-  lib,
-  ...
+{ fleetPackages
+, pkgs
+, config
+, lib
+, ...
 }:
 let
   cfg = config.services.fleet;
@@ -20,9 +19,9 @@ let
       pkgs.coreutils
     ];
 
-    # runScript = "${cfg.package}/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
     runScript = "/opt/orbit/orbit --fleet-desktop=false --disable-updates=true";
   };
+
   fleet-desktop-fhs = pkgs.buildFHSEnv {
     name = "fleet-desktop-fhs";
     targetPkgs =
@@ -41,9 +40,8 @@ let
         libxkbcommon
       ];
     runScript = ''
-      FLEET_DESKTOP_FLEET_URL="https://reddit.cloud.fleetdm.com" \
       FLEET_DESKTOP_DEVICE_IDENTIFIER_PATH="/opt/orbit/identifier" \
-      FLEET_DESKTOP_TLS_CERTIFICATES_PATH="/opt/orbit/certs.pem" \
+      S_CERTIFICATES_PATH="/opt/orbit/certs.pem" \
       exec /opt/orbit/bin/desktop/linux/stable/fleet-desktop/fleet-desktop
     '';
   };
@@ -51,7 +49,17 @@ in
 {
   options.services.fleet = {
     enable = lib.mkEnableOption "fleet";
+
     package = lib.mkPackageOption fleetPackages.${pkgs.stdenv.hostPlatform.system} "fleet" { };
+
+    endpoint = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      example = "https://your-fleet.example.com";
+      description = "The base URL of the Fleet server. Used by fleetd and as the default for Orbit.";
+    };
+
+    # TODO: Add enrol secret and wire up securily with systemd
   };
 
   config = lib.mkIf cfg.enable {
@@ -69,10 +77,12 @@ in
       serviceConfig = {
         # Execute orbit within the FHS environment
         ExecStart = "${orbit-fhs}/bin/orbit-fhs";
+
+        # TODO: Shouldn't this be handled by the package?
         ExecStartPre = pkgs.writeShellScript "orbit-init" ''
           mkdir -p /opt/orbit
           mkdir -p /opt/orbit/bin/osqueryd/linux/stable
-          mkdir -p /opt/orbit/bin/desktop/linux/stable/fleet-desktop 
+          mkdir -p /opt/orbit/bin/desktop/linux/stable/fleet-desktop
           cp "${cfg.package}/opt/orbit/certs.pem" \
              "${cfg.package}/opt/orbit/osquery.flags" \
              "${cfg.package}/opt/orbit/tuf-metadata.json" \
@@ -91,21 +101,28 @@ in
         KillMode = "control-group";
         KillSignal = "SIGTERM";
         CPUQuota = "20%";
+
+        Environment =
+          (lib.optionals (cfg.endpoint != null) [ "ORBIT_FLEET_URL=${cfg.endpoint}" ]);
+
       };
     };
+
     systemd.user.services."fleet-desktop" = {
       description = "Fleet Desktop GUI";
       after = [
         "graphical-session.target"
         "orbit.service"
       ];
-
       wantedBy = [ "graphical-session.target" ];
 
       serviceConfig = {
         ExecStart = "${fleet-desktop-fhs}/bin/fleet-desktop-fhs";
         Restart = "on-failure";
         RestartSec = 10;
+
+        Environment =
+          (lib.optionals (cfg.endpoint != null) [ "FLEET_DESKTOP_FLEET_URL=${cfg.endpoint}" ]);
       };
     };
   };
