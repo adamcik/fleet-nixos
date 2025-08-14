@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> { } }:
 
 let
-  meata = builtins.fromJSON (builtins.readFile ./info.json);
+  meta = builtins.fromJSON (builtins.readFile ./info.json);
 in
 pkgs.buildGoModule {
   pname = "fleet-desktop";
