@@ -16,6 +16,12 @@ pkgs.buildGoModule {
 
   vendorHash = meta.vendorHash;
 
+  patches = [
+    ./patches/osqueryd-path-override.patch
+    ./patches/osquery-log-path.patch
+    ./patches/write-identifier.patch
+  ];
+
   goFlags = [ "-buildvcs=false" ];
   ldflags = [
     "-s"
