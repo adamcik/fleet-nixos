@@ -34,6 +34,8 @@ in {
     env.CGO_ENABLED = "1";
     subPackages = ["orbit/cmd/orbit"];
 
+    passthru.updateScript = ./update.sh;
+
     installPhase = ''
       install -Dm755 $GOPATH/bin/orbit $out/bin/orbit
       install -Dm644 orbit/LICENSE $out/share/licenses/fleet-orbit/LICENSE
@@ -58,6 +60,8 @@ in {
 
     env.CGO_ENABLED = "1";
     subPackages = ["orbit/cmd/desktop"];
+
+    passthru.updateScript = ./update.sh;
 
     installPhase = ''
       install -Dm755 $GOPATH/bin/desktop $out/bin/fleet-desktop
