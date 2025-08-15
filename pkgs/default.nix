@@ -1,6 +1,4 @@
-{ pkgs ? import <nixpkgs> { } }:
-
-let
+{pkgs ? import <nixpkgs> {}}: let
   version = "1.45.1";
 
   src = pkgs.fetchFromGitHub {
@@ -14,15 +12,14 @@ let
   commit = "f4389669e5181b7c92d85b4dad32fb38855fee72";
   date = "";
 
-  goFlags = [ "-buildvcs=false" ];
+  goFlags = ["-buildvcs=false"];
   ldflags = [
     "-s"
     "-w"
     "-X=github.com/fleetdm/fleet/v4/orbit/pkg/build.Version=${version}"
     "-X=github.com/fleetdm/fleet/v4/orbit/pkg/build.Commit=${commit}"
   ];
-in
-{
+in {
   orbit = pkgs.buildGoModule {
     pname = "fleet-orbit";
     inherit
@@ -34,7 +31,7 @@ in
       ;
 
     env.CGO_ENABLED = "1";
-    subPackages = [ "orbit/cmd/orbit" ];
+    subPackages = ["orbit/cmd/orbit"];
 
     installPhase = ''
       install -Dm755 $GOPATH/bin/orbit $out/bin/orbit
@@ -59,7 +56,7 @@ in
       ;
 
     env.CGO_ENABLED = "1";
-    subPackages = [ "orbit/cmd/desktop" ];
+    subPackages = ["orbit/cmd/desktop"];
 
     installPhase = ''
       install -Dm755 $GOPATH/bin/desktop $out/bin/fleet-desktop

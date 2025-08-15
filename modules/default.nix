@@ -1,5 +1,4 @@
-{ fleetPackages }:
-{
+{fleetPackages}: {
   imports = [
     ./fleet.nix
   ];

@@ -1,29 +1,35 @@
-{ fleetPackages, config, pkgs, lib, ... }:
-
-let
+{
+  fleetPackages,
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.services.orbit;
 
   system = pkgs.stdenv.hostPlatform.system;
   fleetPkgs = fleetPackages.${system};
 
   nullOrBoolToString = v:
-    if v == null then null else lib.boolToString v;
+    if v == null
+    then null
+    else lib.boolToString v;
 
   # Validation: require one of enrollSecret or enrollSecretPath
-  _ = lib.asserts.assertMsg
+  _ =
+    lib.asserts.assertMsg
     (
       cfg.enrollSecret != null || cfg.enrollSecretPath != null
     ) "You must set either services.orbit.enrollSecret or services.orbit.enrollSecretPath.";
-in
-{
+in {
   options.services.orbit = {
     enable = lib.mkEnableOption "Fleet Orbit systemd service";
 
-    orbitPackage = lib.mkPackageOption fleetPkgs "orbit" { };
+    orbitPackage = lib.mkPackageOption fleetPkgs "orbit" {};
 
-    osqueryPackage = lib.mkPackageOption pkgs "osquery" { };
+    osqueryPackage = lib.mkPackageOption pkgs "osquery" {};
 
-    fleetDesktopPackage = lib.mkPackageOption fleetPkgs "fleet-desktop" { };
+    fleetDesktopPackage = lib.mkPackageOption fleetPkgs "fleet-desktop" {};
 
     # NOTE: We only expose the options for the flags from orbit that make sense
     # when you assume that update and fleet desktop are off. Other flags that
@@ -107,9 +113,9 @@ in
   config = lib.mkIf cfg.enable {
     systemd.services.orbit = {
       description = "Orbit OSQuery";
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = ["multi-user.target"];
 
-      after = [ "network.service" "syslog.service" ];
+      after = ["network.service" "syslog.service"];
 
       environment = {
         # Required config:
@@ -140,15 +146,14 @@ in
         NIX_ORBIT_WRITE_FLEET_DESKTOP_IDENTIFIER = "true";
       };
 
-      serviceConfig =
-        {
-          ExecStart = "${cfg.orbitPackage}/bin/orbit";
-          TimeoutStartSec = 0;
-          Restart = "always";
-          RestartSec = 60;
-          KillMode = "control-group";
-          KillSignal = "SIGTERM";
-        };
+      serviceConfig = {
+        ExecStart = "${cfg.orbitPackage}/bin/orbit";
+        TimeoutStartSec = 0;
+        Restart = "always";
+        RestartSec = 60;
+        KillMode = "control-group";
+        KillSignal = "SIGTERM";
+      };
     };
 
     systemd.tmpfiles.rules = [
@@ -160,8 +165,8 @@ in
     # sessions and starting the fleet-desktop.
     systemd.user.services."fleet-desktop" = {
       description = "Fleet Desktop GUI";
-      after = [ "graphical-session.target" "orbit.service" ];
-      wantedBy = [ "graphical-session.target" ];
+      after = ["graphical-session.target" "orbit.service"];
+      wantedBy = ["graphical-session.target"];
 
       environment = {
         FLEET_DESKTOP_DEVICE_IDENTIFIER_PATH = "/var/lib/orbit/identifier";
