@@ -1,5 +1,7 @@
 { fleetPackages }:
 {
-  imports = [ ./fleet.nix ];
+  imports = [
+    ./fleet.nix
+  ];
   _module.args.fleetPackages = fleetPackages;
 }
