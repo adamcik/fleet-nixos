@@ -37,9 +37,18 @@
           pkgs = nixpkgs.legacyPackages.${system};
         }
     );
-    checks = forAllSystems (system:
+    checks = forAllSystems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
       {
         formatting = treefmtEval.${system}.config.build.check self;
+        flake-checker =
+          pkgs.runCommand "flake-checker" {
+            nativeBuildInputs = [pkgs.flake-checker];
+          } ''
+            flake-checker --fail-mode ${self}/flake.lock
+            touch $out
+          '';
       }
       // self.packages.${system});
     nixosModules.fleet-nixos = import ./modules {
