@@ -13,8 +13,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "pkgs/default.nix"
+      "managerFilePatterns": [
+        "/pkgs/default.nix/"
       ],
       "matchStrings": [
         "owner = \"fleetdm\";\\s+repo = \"fleet\";\\s+tag = \"orbit-v(?<currentValue>.*?)\";"
@@ -29,7 +29,7 @@
       "matchManagers": [
         "nix",
         "github-actions",
-        "regex"
+        "custom.regex"
       ],
       "automerge": true,
       "labels": [
