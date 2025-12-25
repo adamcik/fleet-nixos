@@ -1,10 +1,48 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
+  "extends": [
+    "config:best-practices"
+  ],
   "nix": {
     "enabled": true
   },
   "lockFileMaintenance": {
-    "enabled": true
-  }
+    "enabled": true,
+    "automerge": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "pkgs/default.nix"
+      ],
+      "matchStrings": [
+        "owner = \"fleetdm\";\\s+repo = \"fleet\";\\s+tag = \"orbit-v(?<currentValue>.*?)\";"
+      ],
+      "depNameTemplate": "fleetdm/fleet",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "nix",
+        "github-actions",
+        "regex"
+      ],
+      "automerge": true,
+      "labels": [
+        "dependencies"
+      ]
+    },
+    {
+      "matchPackageNames": [
+        "fleetdm/fleet"
+      ],
+      "prBodyNotes": [
+        "⚠️ **Note:** Renovate can only update the version string. Please run `./update.sh` locally to update hashes and metadata, or wait for the daily automated update workflow."
+      ]
+    }
+  ]
 }
