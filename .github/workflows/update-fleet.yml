@@ -2,7 +2,7 @@ name: Update Fleet Orbit
 
 on:
   schedule:
-    - cron: '42 4 * * *' # 04:42 UTC (approx 05:42/06:42 Oslo time)
+    - cron: "42 4 * * *" # 04:42 UTC (approx 05:42/06:42 Oslo time)
   workflow_dispatch:
 
 jobs:
