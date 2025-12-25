@@ -13,15 +13,16 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": [
-        "/pkgs/default.nix/"
+      "fileMatch": [
+        "pkgs/default.nix"
       ],
       "matchStrings": [
-        "owner = \"fleetdm\";\\s+repo = \"fleet\";\\s+tag = \"orbit-v(?<currentValue>.*?)\";"
+        "version = \"(?<currentValue>.*?)\"; # renovate: orbit\\s"
       ],
       "depNameTemplate": "fleetdm/fleet",
       "datasourceTemplate": "github-tags",
-      "versioningTemplate": "semver"
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^orbit-v(?<version>.*)$"
     }
   ],
   "packageRules": [
@@ -29,7 +30,7 @@
       "matchManagers": [
         "nix",
         "github-actions",
-        "custom.regex"
+        "regex"
       ],
       "automerge": true,
       "labels": [
