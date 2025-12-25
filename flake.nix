@@ -25,9 +25,18 @@
     treefmtEval = forAllSystems (system:
       treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} {
         projectRootFile = "flake.nix";
+        programs.actionlint.enable = true;
         programs.alejandra.enable = true;
         programs.prettier.enable = true;
         programs.gofmt.enable = true;
+
+        programs.prettier.settings = {
+          printWidth = 0;
+        };
+
+        settings.formatter.prettier.includes = [
+          "*.json"
+        ];
       });
   in {
     formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
@@ -43,7 +52,8 @@
       {
         formatting = treefmtEval.${system}.config.build.check self;
         flake-checker =
-          pkgs.runCommand "flake-checker" {
+          pkgs.runCommand "flake-checker"
+          {
             nativeBuildInputs = [pkgs.flake-checker];
           } ''
             flake-checker --fail-mode ${self}/flake.lock
