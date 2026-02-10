@@ -5,10 +5,10 @@
     owner = "fleetdm";
     repo = "fleet";
     tag = "orbit-v${version}";
-    sha256 = "sha256-rIiY17BawLgr2JdS0xpAp5kgCdU5CDDVZuG2fGUHINs=";
+    sha256 = "sha256-4gLJ6U31RZiccRM7EnsybzhMJwnGGitJjcN/uRJPvJw=";
   };
 
-  vendorHash = "sha256-rrj7RfS5so3297sFhC+7UcFwH/dUFTMDIxPYhstoFvI=";
+  vendorHash = "sha256-S2rB23qulG1NK8R6zHg0fSkvp10Lwupm4Xf+otSiWro=";
   commit = "490a193a5eb97d2f29769412f0f0f3f805999f63";
   date = "2025-12-12T14:46:25Z";
 
