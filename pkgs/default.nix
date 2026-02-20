@@ -1,5 +1,5 @@
 {pkgs ? import <nixpkgs> {}}: let
-  version = "1.52.0"; # renovate: orbit
+  version = "1.52.1"; # renovate: orbit
 
   src = pkgs.fetchFromGitHub {
     owner = "fleetdm";
