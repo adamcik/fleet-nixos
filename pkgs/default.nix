@@ -5,7 +5,7 @@
     owner = "fleetdm";
     repo = "fleet";
     tag = "orbit-v${version}";
-    sha256 = "sha256-4gLJ6U31RZiccRM7EnsybzhMJwnGGitJjcN/uRJPvJw=";
+    sha256 = "sha256-e03ikv/VG8Xz7s6c3qtJAnytrtaW30G8e/SC/cg6uVM=";
   };
 
   vendorHash = "sha256-S2rB23qulG1NK8R6zHg0fSkvp10Lwupm4Xf+otSiWro=";
