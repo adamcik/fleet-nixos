@@ -1,16 +1,17 @@
 {pkgs ? import <nixpkgs> {}}: let
-  version = "1.52.1"; # renovate: orbit
+  version = "1.53.1"; # renovate: orbit
+
+  commit = "f28467a4158e58e3c9b4d335c61f3201d6ef8658";
+  date = "2026-03-18T17:14:25Z";
 
   src = pkgs.fetchFromGitHub {
     owner = "fleetdm";
     repo = "fleet";
-    tag = "orbit-v${version}";
-    sha256 = "sha256-4gLJ6U31RZiccRM7EnsybzhMJwnGGitJjcN/uRJPvJw=";
+    rev = commit;
+    sha256 = "sha256-ut1WGYyngr/nf7uKev26ni1wMPTaW5t/YXjl8C5qVjk=";
   };
 
-  vendorHash = "sha256-S2rB23qulG1NK8R6zHg0fSkvp10Lwupm4Xf+otSiWro=";
-  commit = "490a193a5eb97d2f29769412f0f0f3f805999f63";
-  date = "2025-12-12T14:46:25Z";
+  vendorHash = "sha256-/6RFtO7BHxi9g59dn84+q/oUEZB8kWppTu2OFq8HHDg=";
 
   goFlags = ["-buildvcs=false"];
   ldflags = [

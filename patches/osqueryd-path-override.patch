@@ -1,8 +1,8 @@
 diff --git a/orbit/cmd/orbit/orbit.go b/orbit/cmd/orbit/orbit.go
-index 5aba888849..3650578096 100644
+index b7dfde4825..1ea13365ab 100644
 --- a/orbit/cmd/orbit/orbit.go
 +++ b/orbit/cmd/orbit/orbit.go
-@@ -85,6 +85,11 @@ func main() {
+@@ -93,6 +93,11 @@ func main() {
  		shellCommand,
  	}
  	app.Flags = []cli.Flag{
@@ -14,12 +14,11 @@ index 5aba888849..3650578096 100644
  		&cli.StringFlag{
  			Name:    "root-dir",
  			Usage:   "Root directory for Orbit state",
-@@ -587,7 +592,11 @@ func main() {
- 		// it fetches osqueryd once as part of initialization.
+@@ -606,7 +611,10 @@ func main() {
  		var updater *update.Updater
  		var updateRunner *update.Runner
+ 		var osqueryVersion string
 -		if !c.Bool("disable-updates") || c.Bool("dev-mode") {
-+
 +		if override := c.String("osqueryd-path"); override != "" {
 +			log.Info().Msgf("Overriding osqueryd path: %s", override)
 +			osquerydPath = override
