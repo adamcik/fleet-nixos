@@ -3,6 +3,9 @@
   "extends": [
     "config:best-practices"
   ],
+  "requiredStatusChecks": [
+    "CI"
+  ],
   "nix": {
     "enabled": true
   },
@@ -10,39 +13,15 @@
     "enabled": true,
     "automerge": true
   },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/pkgs/default.nix/"
-      ],
-      "matchStrings": [
-        "version = \"(?<currentValue>.*?)\"; # renovate: orbit\\s"
-      ],
-      "depNameTemplate": "fleetdm/fleet",
-      "datasourceTemplate": "github-tags",
-      "versioningTemplate": "semver",
-      "extractVersionTemplate": "^orbit-v(?<version>.*)$"
-    }
-  ],
   "packageRules": [
     {
       "matchManagers": [
         "nix",
-        "github-actions",
-        "custom.regex"
+        "github-actions"
       ],
       "automerge": true,
       "labels": [
         "dependencies"
-      ]
-    },
-    {
-      "matchPackageNames": [
-        "fleetdm/fleet"
-      ],
-      "prBodyNotes": [
-        "⚠️ **Note:** Renovate can only update the version string. Please run `./update.sh` locally to update hashes and metadata, or wait for the daily automated update workflow."
       ]
     }
   ]

@@ -1,5 +1,5 @@
 {pkgs ? import <nixpkgs> {}}: let
-  version = "1.53.1"; # renovate: orbit
+  version = "1.53.1";
 
   commit = "f28467a4158e58e3c9b4d335c61f3201d6ef8658";
   date = "2026-03-18T17:14:25Z";
