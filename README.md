@@ -1,5 +1,7 @@
 > [!WARNING]
 > This project is less actively maintained as I no longer have NixOS machines running Fleet.
+> It is however setup with Renovate and `./update.sh` in CI to try and automatically keep
+> things up to date.
 
 # fleet-nixos
 
