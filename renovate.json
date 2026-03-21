@@ -3,9 +3,6 @@
   "extends": [
     "config:best-practices"
   ],
-  "requiredStatusChecks": [
-    "CI"
-  ],
   "nix": {
     "enabled": true
   },
