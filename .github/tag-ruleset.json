@@ -1,0 +1,25 @@
+{
+  "id": 14249211,
+  "name": "Tag protection",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "adamcik/fleet-nixos",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~ALL"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    }
+  ],
+  "bypass_actors": []
+}
