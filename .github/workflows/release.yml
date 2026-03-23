@@ -1,0 +1,56 @@
+name: Tag and Release Orbit
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tag_release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: DeterminateSystems/determinate-nix-action@131015bad844610e5e6300f8a143bf625d3e74f4 # v3.17.0
+      - uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+
+      - name: Resolve version
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(nix eval --raw .#packages.x86_64-linux.orbit.version)
+          if [ -z "$version" ]; then
+            echo "Failed to parse version from pkgs/default.nix" >&2
+            exit 1
+          fi
+          tag="v${version}"
+          git fetch --tags
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Create tag
+        if: ${{ steps.resolve.outputs.exists == 'false' }}
+        shell: bash
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          git tag -a "${{ steps.resolve.outputs.tag }}" -m "Orbit ${{ steps.resolve.outputs.version }}"
+          git push origin "${{ steps.resolve.outputs.tag }}"
+
+      - name: Create GitHub release
+        if: ${{ steps.resolve.outputs.exists == 'false' }}
+        env:
+          GH_TOKEN: ${{ secrets.UPDATE_PAT }}
+        run: |
+          gh release create "${{ steps.resolve.outputs.tag }}" \
+            --title "${{ steps.resolve.outputs.tag }}" \
+            --generate-notes
