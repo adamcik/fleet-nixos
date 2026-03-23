@@ -17,7 +17,8 @@ jobs:
       - name: Resolve version
         id: resolve
         shell: bash
-        run: |
+        run:
+          |
           set -euo pipefail
           version=$(nix eval --raw .#packages.x86_64-linux.orbit.version)
           if [ -z "$version" ]; then
@@ -42,7 +43,8 @@ jobs:
           GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-        run: |
+        run:
+          |
           git tag -a "${{ steps.resolve.outputs.tag }}" -m "Orbit ${{ steps.resolve.outputs.version }}"
           git push origin "${{ steps.resolve.outputs.tag }}"
 
@@ -50,7 +52,8 @@ jobs:
         if: ${{ steps.resolve.outputs.exists == 'false' }}
         env:
           GH_TOKEN: ${{ secrets.UPDATE_PAT }}
-        run: |
+        run:
+          |
           gh release create "${{ steps.resolve.outputs.tag }}" \
             --title "${{ steps.resolve.outputs.tag }}" \
             --generate-notes

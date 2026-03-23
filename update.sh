@@ -72,10 +72,12 @@ else
 fi
 DATE=$(curl -s "$API_URL/commits/$SHA" | jq -r '.commit.committer.date')
 
+printf 'Found the following version:\n\n'
+printf 'version=%s\n' "$VERSION"
+printf 'commit=%s\n' "$SHA"
+printf 'date=%s\n' "$DATE"
+
 if [ "$DRY_RUN" -eq 1 ]; then
-  printf 'version=%s\n' "$VERSION"
-  printf 'commit=%s\n' "$SHA"
-  printf 'date=%s\n' "$DATE"
   exit 0
 fi
 
