@@ -147,6 +147,33 @@ nix-update orbit --flake --use-update-script
 
 This will update the version, commit, and date in `pkgs/default.nix`.
 
+### Patch workflow
+
+Patch files in `patches/` should be treated as exported commits from a Fleet
+checkout, not hand-edited long-term.
+
+1. Materialize a patch branch in `../fleet` from local patch files:
+
+   ```shell
+   ./import-patches.sh --base-tag orbit-v1.54.0 --branch orbit-nixos-patches
+   ```
+
+   This applies each `patches/NNNN-*.patch` file in lexical order and creates
+   one commit per patch on top of the base tag.
+
+2. Rebase that branch in `../fleet` onto a newer Orbit tag as needed.
+
+3. Export the rebased commit range back into patch files:
+
+   ```shell
+   ./export-patches.sh --base orbit-v1.54.0 --head orbit-nixos-patches
+   ```
+
+   This writes `patches/NNNN-*.patch` (one per commit), where each filename is
+   derived from the first line of the commit message.
+
+This keeps patches reproducible and makes upstream churn easier to manage.
+
 ## Fleet Desktop
 
 Fleet Desktop is enabled as a user service when Orbit is enabled. It uses the

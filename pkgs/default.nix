@@ -1,17 +1,21 @@
 {pkgs ? import <nixpkgs> {}}: let
-  version = "1.53.1";
+  patchFiles = builtins.attrNames (builtins.readDir ../patches);
+  orbitPatchFiles = builtins.filter (name: builtins.match "[0-9][0-9][0-9][0-9]-.*\\.patch" name != null) patchFiles;
+  orbitPatches = builtins.map (name: ../patches + "/${name}") (builtins.sort builtins.lessThan orbitPatchFiles);
 
-  commit = "f28467a4158e58e3c9b4d335c61f3201d6ef8658";
-  date = "2026-03-18T17:14:25Z";
+  version = "1.54.0";
+
+  commit = "6f9e4ce21432a8fc24a3eaca02536e484262b09b";
+  date = "2026-03-30T15:54:35Z";
 
   src = pkgs.fetchFromGitHub {
     owner = "fleetdm";
     repo = "fleet";
     rev = commit;
-    sha256 = "sha256-ut1WGYyngr/nf7uKev26ni1wMPTaW5t/YXjl8C5qVjk=";
+    sha256 = "sha256-0gtxQ7Dh96bsPKtqsXqrAs+bJ7+EyAlDwBYc2y8mFQA=";
   };
 
-  vendorHash = "sha256-/6RFtO7BHxi9g59dn84+q/oUEZB8kWppTu2OFq8HHDg=";
+  vendorHash = "sha256-kGPZTfaAu3oxUsIgKD5slCgyWdQqanS2nLJgSku+tQ0=";
 
   goFlags = ["-buildvcs=false"];
   ldflags = [
@@ -42,12 +46,7 @@ in {
       install -Dm644 orbit/LICENSE $out/share/licenses/fleet-orbit/LICENSE
     '';
 
-    patches = [
-      ../patches/osqueryd-path-override.patch
-      ../patches/osquery-log-path.patch
-      ../patches/orbit-nixos.patch
-      ../patches/scripts-nixos.patch
-    ];
+    patches = orbitPatches;
   };
 
   fleet-desktop = pkgs.buildGoModule {

@@ -1,0 +1,28 @@
+diff --git a/orbit/cmd/orbit/orbit.go b/orbit/cmd/orbit/orbit.go
+index 7f942b2fb9..367330197a 100644
+--- a/orbit/cmd/orbit/orbit.go
++++ b/orbit/cmd/orbit/orbit.go
+@@ -93,6 +93,11 @@ func main() {
+ 		shellCommand,
+ 	}
+ 	app.Flags = []cli.Flag{
++		&cli.StringFlag{
++			Name:    "osqueryd-path",
++			Usage:   "Override the path to the osqueryd binary",
++			EnvVars: []string{"NIX_ORBIT_OSQUERYD_PATH"},
++		},
+ 		&cli.StringFlag{
+ 			Name:    "root-dir",
+ 			Usage:   "Root directory for Orbit state",
+@@ -619,7 +624,10 @@ func orbitAction(c *cli.Context) error {
+ 	var updater *update.Updater
+ 	var updateRunner *update.Runner
+ 	var osqueryVersion string
+-	if !c.Bool("disable-updates") || c.Bool("dev-mode") {
++	if override := c.String("osqueryd-path"); override != "" {
++		log.Info().Msgf("Overriding osqueryd path: %s", override)
++		osquerydPath = override
++	} else if !c.Bool("disable-updates") || c.Bool("dev-mode") {
+ 		updater, err := update.NewUpdater(opt)
+ 		if err != nil {
+ 			return fmt.Errorf("create updater: %w", err)

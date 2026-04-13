@@ -25,13 +25,15 @@
     treefmtEval = forAllSystems (system:
       treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} {
         projectRootFile = "flake.nix";
-        programs.actionlint.enable = true;
-        programs.alejandra.enable = true;
-        programs.prettier.enable = true;
-        programs.gofmt.enable = true;
 
-        programs.prettier.settings = {
-          printWidth = 0;
+        programs = {
+          actionlint.enable = true;
+          alejandra.enable = true;
+          prettier.enable = true;
+          gofmt.enable = true;
+          prettier.settings = {
+            printWidth = 0;
+          };
         };
 
         settings.formatter.prettier.includes = [
@@ -40,12 +42,14 @@
       });
   in {
     formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
+
     packages = forAllSystems (
       system:
         import ./pkgs {
           pkgs = nixpkgs.legacyPackages.${system};
         }
     );
+
     checks = forAllSystems (system: let
       pkgs = nixpkgs.legacyPackages.${system};
     in
@@ -61,9 +65,11 @@
           '';
       }
       // self.packages.${system});
+
     nixosModules.fleet-nixos = import ./modules {
       fleetPackages = self.packages;
     };
+
     devShells = forAllSystems (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
