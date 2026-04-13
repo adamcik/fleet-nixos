@@ -42,6 +42,8 @@ jobs:
       - name: Resolve version
         id: resolve
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run:
           |
           set -euo pipefail
@@ -55,22 +57,35 @@ jobs:
           tag="v${version}"
           git fetch --tags
           if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "release_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
-      - name: Create tag and create release
-        if: ${{ steps.resolve.outputs.exists == 'false' }}
+      - name: Create tag
+        if: ${{ steps.resolve.outputs.tag_exists == 'false' }}
         shell: bash
         run:
           |
           git tag -a "${{ steps.resolve.outputs.tag }}" -m "Orbit ${{ steps.resolve.outputs.version }}"
           git push origin "${{ steps.resolve.outputs.tag }}"
 
+      - name: Create release
+        if: ${{ steps.resolve.outputs.release_exists == 'false' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run:
+          |
           gh release create "${{ steps.resolve.outputs.tag }}" \
             --title "${{ steps.resolve.outputs.tag }}" \
             --generate-notes
