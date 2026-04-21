@@ -121,10 +121,11 @@ These patches ensure that Fleet Orbit works correctly in the read-only and non-s
 
 ### Running Checks
 
-To run all checks (formatting, flake structure, and package builds) locally, use:
+To run all checks (formatting and package builds) locally, use:
 
 ```shell
 nix flake check
+nix flake check ./dev
 ```
 
 This is the same command used in CI to ensure the repository is in a good state.
@@ -134,7 +135,7 @@ This is the same command used in CI to ensure the repository is in a good state.
 This project uses `alejandra` for formatting Nix files. You can format the entire project with:
 
 ```shell
-nix fmt .
+nix fmt ./dev
 ```
 
 ## Updating Fleet Orbit
