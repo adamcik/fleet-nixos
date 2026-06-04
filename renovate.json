@@ -13,10 +13,22 @@
   "packageRules": [
     {
       "matchManagers": [
-        "nix",
-        "github-actions"
+        "nix"
       ],
       "automerge": true,
+      "labels": [
+        "dependencies"
+      ]
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "automerge": false,
+      "groupName": "github-actions-monthly",
+      "extends": [
+        "schedule:monthly"
+      ],
       "labels": [
         "dependencies"
       ]
