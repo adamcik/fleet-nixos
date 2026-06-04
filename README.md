@@ -130,6 +130,26 @@ nix flake check ./dev
 
 This is the same command used in CI to ensure the repository is in a good state.
 
+### Cachix
+
+CI pushes build outputs to the public `fleet-nixos` Cachix cache. The development
+flake is configured to use it:
+
+```nix
+nixConfig = {
+  extra-substituters = ["https://fleet-nixos.cachix.org"];
+  extra-trusted-public-keys = ["fleet-nixos.cachix.org-1:WuxM+Kqv8GoWP+kTmxHBUk9qVXvjvrYzoG17LtqJ4xc="];
+};
+```
+
+GitHub Actions requires `CACHIX_AUTH_TOKEN` to push to the cache.
+
+When using direnv, use the development flake and accept its cache configuration:
+
+```shell
+use flake ./dev --accept-flake-config
+```
+
 ### Formatting
 
 This project uses `alejandra` for formatting Nix files. You can format the entire project with:

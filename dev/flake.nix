@@ -1,6 +1,11 @@
 {
   description = "fleet-nixos development flake";
 
+  nixConfig = {
+    extra-substituters = ["https://fleet-nixos.cachix.org"];
+    extra-trusted-public-keys = ["fleet-nixos.cachix.org-1:WuxM+Kqv8GoWP+kTmxHBUk9qVXvjvrYzoG17LtqJ4xc="];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
