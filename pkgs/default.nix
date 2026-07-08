@@ -1,4 +1,5 @@
 {pkgs ? import <nixpkgs> {}}: let
+  buildGoModule = pkgs.buildGo126Module;
   patchFiles = builtins.attrNames (builtins.readDir ../patches);
   orbitPatchFiles = builtins.filter (name: builtins.match "[0-9][0-9][0-9][0-9]-.*\\.patch" name != null) patchFiles;
   orbitPatches = builtins.map (name: ../patches + "/${name}") (builtins.sort builtins.lessThan orbitPatchFiles);
@@ -26,7 +27,7 @@
     "-X=github.com/fleetdm/fleet/v4/orbit/pkg/build.Date=${date}"
   ];
 in {
-  orbit = pkgs.buildGoModule {
+  orbit = buildGoModule {
     pname = "fleet-orbit";
     inherit
       version
@@ -36,7 +37,10 @@ in {
       ldflags
       ;
 
-    env.CGO_ENABLED = "1";
+    env = {
+      CGO_ENABLED = "1";
+      GOTOOLCHAIN = "local";
+    };
     subPackages = ["orbit/cmd/orbit"];
 
     passthru.updateScript = ../update.sh;
@@ -49,7 +53,7 @@ in {
     patches = orbitPatches;
   };
 
-  fleet-desktop = pkgs.buildGoModule {
+  fleet-desktop = buildGoModule {
     pname = "fleet-desktop";
     inherit
       version
@@ -59,7 +63,10 @@ in {
       ldflags
       ;
 
-    env.CGO_ENABLED = "1";
+    env = {
+      CGO_ENABLED = "1";
+      GOTOOLCHAIN = "local";
+    };
     subPackages = ["orbit/cmd/desktop"];
 
     passthru.updateScript = ../update.sh;
