@@ -3,6 +3,9 @@
 > It is however setup with Renovate and `./update.sh` in CI to try and automatically keep
 > things up to date.
 
+Once https://github.com/NixOS/nixpkgs/pull/525702 is merged prefer using Fleet directly
+from nixpkgs. See also https://github.com/fleetdm/fleet/issues/7319#issuecomment-4936718648
+
 # fleet-nixos
 
 Fleet Orbit and Fleet Desktop integration for NixOS, packaged as a Nix flake.
