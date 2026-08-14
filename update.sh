@@ -77,6 +77,14 @@ printf 'version=%s\n' "$VERSION"
 printf 'commit=%s\n' "$SHA"
 printf 'date=%s\n' "$DATE"
 
+if [ -n "${GITHUB_OUTPUT:-}" ]; then
+  {
+    printf 'version=%s\n' "$VERSION"
+    printf 'commit=%s\n' "$SHA"
+    printf 'date=%s\n' "$DATE"
+  } >> "$GITHUB_OUTPUT"
+fi
+
 if [ "$DRY_RUN" -eq 1 ]; then
   exit 0
 fi
