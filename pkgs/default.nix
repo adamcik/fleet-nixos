@@ -4,19 +4,19 @@
   orbitPatchFiles = builtins.filter (name: builtins.match "[0-9][0-9][0-9][0-9]-.*\\.patch" name != null) patchFiles;
   orbitPatches = builtins.map (name: ../patches + "/${name}") (builtins.sort builtins.lessThan orbitPatchFiles);
 
-  version = "1.59.0";
+  version = "1.61.0";
 
-  commit = "c9c8bff2fbad08d6a8e581f409d57e5acc633861";
-  date = "2026-08-13T19:44:12Z";
+  commit = "1e8f103691a1f6e451ecd21041769c8f93c34a8d";
+  date = "2026-09-14T16:17:48Z";
 
   src = pkgs.fetchFromGitHub {
     owner = "fleetdm";
     repo = "fleet";
     rev = commit;
-    sha256 = "sha256-JkEiq3V6VFKQYAxfD9YAmpJW978Hp52X5btrZpPjtxY=";
+    sha256 = "sha256-OZym6219V0D5HffbmIgXLLZH4Ecdx9eEAB4qoyXm//U=";
   };
 
-  vendorHash = "sha256-FJtIK+SQNRpxTQdzPAFQCOy4dLNf7BfLru8Gm3ejtZM=";
+  vendorHash = "sha256-FfZHPudlcBTiq/mSxUoiWbZHPnLzjaQSx4Hy9Q//cdg=";
 
   goFlags = ["-buildvcs=false"];
   ldflags = [
