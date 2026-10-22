@@ -1,22 +1,22 @@
 {pkgs ? import <nixpkgs> {}}: let
-  buildGoModule = pkgs.buildGo126Module;
+  buildGoModule = pkgs.buildGo127Module;
   patchFiles = builtins.attrNames (builtins.readDir ../patches);
   orbitPatchFiles = builtins.filter (name: builtins.match "[0-9][0-9][0-9][0-9]-.*\\.patch" name != null) patchFiles;
   orbitPatches = builtins.map (name: ../patches + "/${name}") (builtins.sort builtins.lessThan orbitPatchFiles);
 
-  version = "1.61.0";
+  version = "1.62.0";
 
-  commit = "1e8f103691a1f6e451ecd21041769c8f93c34a8d";
-  date = "2026-09-14T16:17:48Z";
+  commit = "06c052b28de318c9ef2704d2e387ebd9f7f3dfa2";
+  date = "2026-10-19T13:50:14Z";
 
   src = pkgs.fetchFromGitHub {
     owner = "fleetdm";
     repo = "fleet";
     rev = commit;
-    sha256 = "sha256-OZym6219V0D5HffbmIgXLLZH4Ecdx9eEAB4qoyXm//U=";
+    sha256 = "sha256-79V5YHvqFW+rDNGux1jma/+2Z6oIQx7aET0oJ9dkT9o=";
   };
 
-  vendorHash = "sha256-FfZHPudlcBTiq/mSxUoiWbZHPnLzjaQSx4Hy9Q//cdg=";
+  vendorHash = "sha256-lU1IGly/9AbPuO8uNFp6vyMYS/euxefe0BOL9QmhlR4=";
 
   goFlags = ["-buildvcs=false"];
   ldflags = [
