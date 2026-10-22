@@ -10,7 +10,48 @@
     "enabled": true,
     "automerge": true
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^orbit\\.json$/"
+      ],
+      "matchStrings": [
+        "\"version\"\\s*:\\s*\"(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)\""
+      ],
+      "depNameTemplate": "fleetdm/fleet",
+      "datasourceTemplate": "github-tags",
+      "extractVersionTemplate": "^orbit-v(?<version>[0-9]+\\.[0-9]+\\.[0-9]+)$",
+      "versioningTemplate": "semver"
+    }
+  ],
   "packageRules": [
+    {
+      "description": "Keep the release, required Go compiler, and Nix artifacts in one tested update",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchPackageNames": [
+        "fleetdm/fleet"
+      ],
+      "commitMessageTopic": "Fleet Orbit",
+      "automerge": false,
+      "labels": [
+        "dependencies"
+      ],
+      "postUpgradeTasks": {
+        "commands": [
+          "/opt/nix-post-upgrade update-release update-orbit {{{newVersion}}}",
+          "/opt/nix-post-upgrade fmt"
+        ],
+        "executionMode": "update",
+        "fileFilters": [
+          "orbit.json",
+          "pkgs/default.nix",
+          "flake.lock"
+        ]
+      }
+    },
     {
       "matchManagers": [
         "nix"

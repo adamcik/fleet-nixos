@@ -1,5 +1,7 @@
 {pkgs ? import <nixpkgs> {}}: let
-  buildGoModule = pkgs.buildGo127Module;
+  goVersion = "1.27";
+  go = pkgs.${"go_" + builtins.replaceStrings ["."] ["_"] goVersion};
+  buildGoModule = pkgs.buildGoModule.override {inherit go;};
   patchFiles = builtins.attrNames (builtins.readDir ../patches);
   orbitPatchFiles = builtins.filter (name: builtins.match "[0-9][0-9][0-9][0-9]-.*\\.patch" name != null) patchFiles;
   orbitPatches = builtins.map (name: ../patches + "/${name}") (builtins.sort builtins.lessThan orbitPatchFiles);
