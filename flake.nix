@@ -40,16 +40,16 @@
         orbit-go-version = let
           pkgs = nixpkgs.legacyPackages.${system};
           requiredVersion = requiredGoVersionForOrbit system;
-          selectedVersion = pkgs.go_1_26.version;
+          selectedVersion = self.packages.${system}.orbit.go.version;
         in
           assert lib.assertMsg (lib.versionAtLeast selectedVersion requiredVersion)
           "fleet orbit requires Go ${requiredVersion}, but pinned nixpkgs provides ${selectedVersion}";
-          pkgs.runCommand "orbit-go-version" {
-            requiredVersion = requiredVersion;
-            selectedVersion = selectedVersion;
-          } ''
-            touch "$out"
-          '';
+            pkgs.runCommand "orbit-go-version" {
+              requiredVersion = requiredVersion;
+              selectedVersion = selectedVersion;
+            } ''
+              touch "$out"
+            '';
       });
 
     nixosModules.fleet-nixos = import ./modules {
