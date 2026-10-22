@@ -28,6 +28,6 @@ jobs:
           name: fleet-nixos
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Run root flake checks and builds
-        run: nix flake check # Note, check includes build of orbit.
+        run: nix flake check --max-jobs 1 # Orbit and desktop share a large source tree.
       - name: Run development flake checks
         run: nix flake check ./dev

@@ -1,7 +1,7 @@
 > [!WARNING]
 > This project is less actively maintained as I no longer have NixOS machines running Fleet.
-> It is however setup with Renovate and `./update.sh` in CI to try and automatically keep
-> things up to date.
+> Renovate proposes release and dependency updates. A scheduled check exercises
+> `./update.sh` against the latest Orbit release without publishing another PR.
 
 Once https://github.com/NixOS/nixpkgs/pull/525702 is merged prefer using Fleet directly
 from nixpkgs. See also https://github.com/fleetdm/fleet/issues/7319#issuecomment-4936718648
@@ -166,10 +166,61 @@ nix fmt ./dev
 To update to the latest Fleet Orbit release, run:
 
 ```shell
-nix-update orbit --flake --use-update-script
+./update.sh
 ```
 
-This will update the version, commit, and date in `pkgs/default.nix`.
+For a specific release or a read-only preview:
+
+```shell
+./update.sh --version 1.62.0
+./update.sh --version 1.62.0 --dry-run
+```
+
+Run from the repository root. The flake app supplies the updater's tools from
+locked nixpkgs; no Nix channel or separately installed `nix-update` is needed.
+GitHub reads use `GH_TOKEN`, `GITHUB_TOKEN`, or `RENOVATE_TOKEN` when available.
+
+The updater reads the selected tag's exact commit and `go.mod`, preserves the
+current Go compiler when it satisfies that requirement, or selects the oldest
+suitable compiler available in locked nixpkgs. It compares full patch versions,
+not just Go families. Only if no compiler is suitable does it refresh the
+`nixpkgs` flake input and retry once. It never downloads a compiler outside Nix.
+
+`orbit.json` records the requested release; `pkgs/default.nix` records generated
+package metadata. CI requires these versions to match, so a failed or skipped
+post-upgrade task cannot leave a green PR that merely relabels old source.
+
+The explicit `goVersion` family, release metadata, source hash, and shared vendor
+hash are updated together in `pkgs/default.nix`. Both packages and the compiler
+compatibility and release-version checks must build successfully. Builds run
+sequentially to limit scratch-space use. On failure, all three files are restored
+to their entry state, preserving Renovate's requested release while leaving the
+old generated version in place for CI to reject. Dry runs do not
+change files, refresh nixpkgs, or build packages; they report when a lock refresh
+would be needed.
+
+### Renovate integration and rollout
+
+Renovate updates `orbit.json` from stable `orbit-vX.Y.Z` tags and passes its selected version
+to `/opt/nix-post-upgrade update-release update-orbit X.Y.Z`. The updater must not
+independently select a different release after Renovate has applied version or
+approval policies. The runner's launcher invokes the `update-orbit` flake app;
+this is an explicit opt-in, not general shell-command permission.
+
+Land the `update-release` launcher support in `adamcik/renovate-runner` **before**
+enabling this repository's Renovate rule. Check extraction and artifact generation
+in an isolated runner checkout before permitting publication. Full Renovate dry
+runs can still execute local post-upgrade work. The existing `go-nix-module`
+preset is not applicable: Fleet's Go manifest is in fetched source, not this repo.
+
+Renovate is the only release PR writer. `.github/workflows/update.yml` remains a
+read-only scheduled/manual integration check and keeps the existing success
+pulse. It does not use `UPDATE_PAT` or publish branches or PRs; that secret can be
+retired after rollout. Normal nixpkgs updates remain separate unless the release
+requires a compiler not available in the current lock.
+
+Updater regression tests run as `checks.<system>.updater`, including offline
+release fixtures, rollback/idempotence checks, and the real Nix compiler selector.
 
 ### Patch workflow
 
