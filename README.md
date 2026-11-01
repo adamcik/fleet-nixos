@@ -111,14 +111,21 @@ NOTE: Orbit does not log everything to journald. Check `/var/log/orbit/` for log
 
 ## Patches
 
-Patches in this repo add extra flags and functionality to Orbit for NixOS compatibility:
+The remaining local patch extends Orbit's NixOS compatibility:
 
-- `orbit-nixos.patch`: Patches Orbit's script execution to automatically replace common shebangs (like `#!/bin/bash`) with NixOS-style paths (`#!/run/current-system/sw/bin/bash`) before execution.
-- `osqueryd-path-override.patch`: Adds `NIX_ORBIT_OSQUERYD_PATH` to allow overriding the `osqueryd` binary path, ensuring the version from the Nix store is used.
-- `osquery-log-path.patch`: Adds `NIX_ORBIT_OSQUERY_LOG_PATH` to ensure osquery logs are written to `/var/log/orbit/osquery/` instead of the root directory.
 - `scripts-nixos.patch`: Relaxes Orbit's shebang validation to allow NixOS-specific paths and `/usr/bin/env` interpreters in scripts.
 
-These patches ensure that Fleet Orbit works correctly in the read-only and non-standard environment of NixOS.
+Orbit 1.63.0 includes upstream NixOS support:
+
+- [Add initial support to NixOS (`01b9e67587`)](https://github.com/fleetdm/fleet/commit/01b9e675875af4bf9b4fced7ddd035190ce6ffca)
+  adds interpreter resolution, the `NIX_ORBIT_OSQUERYD_PATH`,
+  `NIX_ORBIT_DESKTOP_PATH`, and `NIX_ORBIT_OSQUERY_LOG_PATH` overrides, and Nix
+  package inventory. This supersedes the three former local execution/path patches.
+- [Exclude NixOS `-data`/`-env` paths from software versions (`e320be4ea0`)](https://github.com/fleetdm/fleet/commit/e320be4ea0a8f103b24fdf1e10f027b054a6c981)
+  fixes duplicate versions in that inventory.
+
+The local patch only extends shebang validation to accept explicit system-profile
+paths.
 
 ## Development
 
@@ -172,8 +179,8 @@ To update to the latest Fleet Orbit release, run:
 For a specific release or a read-only preview:
 
 ```shell
-./update.sh --version 1.62.0
-./update.sh --version 1.62.0 --dry-run
+./update.sh --version 1.63.0
+./update.sh --version 1.63.0 --dry-run
 ```
 
 Run from the repository root. The flake app supplies the updater's tools from
@@ -230,7 +237,7 @@ checkout, not hand-edited long-term.
 1. Materialize a patch branch in `../fleet` from local patch files:
 
    ```shell
-   ./import-patches.sh --base-tag orbit-v1.54.0 --branch orbit-nixos-patches
+   ./import-patches.sh --base-tag orbit-v1.63.0 --branch orbit-nixos-patches
    ```
 
    This applies each `patches/NNNN-*.patch` file in lexical order and creates
@@ -241,7 +248,7 @@ checkout, not hand-edited long-term.
 3. Export the rebased commit range back into patch files:
 
    ```shell
-   ./export-patches.sh --base orbit-v1.54.0 --head orbit-nixos-patches
+   ./export-patches.sh --base orbit-v1.63.0 --head orbit-nixos-patches
    ```
 
    This writes `patches/NNNN-*.patch` (one per commit), where each filename is
