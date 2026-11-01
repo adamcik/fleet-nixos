@@ -1,10 +1,21 @@
 > [!WARNING]
-> This project is less actively maintained as I no longer have NixOS machines running Fleet.
-> Renovate proposes release and dependency updates. A scheduled check exercises
-> `./update.sh` against the latest Orbit release without publishing another PR.
+> **Deprecated: migrate to nixpkgs as soon as reasonably possible.**
+> `nixos-unstable` now includes `fleet-orbit`, `fleet-desktop`, and the
+> `services.orbit` NixOS module through [nixpkgs PR #525702](https://github.com/NixOS/nixpkgs/pull/525702),
+> built on work from this repository, [Adriel Velazquez's earlier integration](https://github.com/AdrielVelazquez/fleet-nixos),
+> and other contributors. Please use that maintained integration rather than
+> starting new deployments with this flake.
+>
+> This repository will remain available with best-effort automated updates until
+> **May 2027**, around the NixOS **27.05** release, to give existing users time to
+> migrate. At that point, updates and support will end and the repository will be
+> archived. I no longer have NixOS machines running Fleet to verify runtime behavior.
 
-Once https://github.com/NixOS/nixpkgs/pull/525702 is merged prefer using Fleet directly
-from nixpkgs. See also https://github.com/fleetdm/fleet/issues/7319#issuecomment-4936718648
+Before migrating, compare the packaged Orbit version and module options with your
+deployment. At the time of writing, `nixos-unstable` packages Orbit 1.55.0; the
+[update to use Fleet's upstream NixOS support is still open (#556865)](https://github.com/NixOS/nixpkgs/pull/556865).
+Migration need not mean an immediate downgrade: plan the switch when the nixpkgs
+package meets your deployment's requirements.
 
 # fleet-nixos
 
@@ -29,6 +40,9 @@ configuration.
 - **Update Script**: Automates updating to the latest Fleet Orbit release.
 
 ## Installation
+
+The instructions below are for the legacy flake. Prefer nixpkgs' built-in
+`services.orbit` module; see the migration and retirement notice above.
 
 1. **Add the flake as an input:**
 
