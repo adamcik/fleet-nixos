@@ -20,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Verify Actions dependency lockfile
+        uses: adamcik/nix-tooling/actions/verify-actions-lock@a73c6c63e01f95b7f7e88e95fc5a20a8339c66d4
       - name: Install Nix
         uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31
       - name: Set up Cachix
